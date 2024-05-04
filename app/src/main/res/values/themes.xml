@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme2" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your light theme here. -->
+<!--         <item name="android:statusBarColor">@color/black</item>-->
+    </style>
+
+<!--    <style name="Theme.SamsungProjectLangLearner" parent="Theme.AppCompat.Light.DarkActionBar" >-->
+<!--        <item name="android:statusBarColor">@color/black</item>-->
+<!--    </style>-->
+</resources>

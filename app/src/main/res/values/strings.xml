@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">LingoLearn</string>
+    <string name="dictionaries">Dictionaries</string>
+    <string name="dictionary_name">Dictionary_name</string>
+    <string name="input_dicitonary_name">Input dicitonary name</string>
+    <string name="input_word">Input word</string>
+    <string name="input_translation">Input translation</string>
+    <string name="word">Word</string>
+    <string name="translation">Translation</string>
+    <string name="dicts">Dicts</string>
+    <string name="dict_name">Dict name</string>
+    <string name="add">ADD</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="write_right_answer_please">Write right answer, please</string>
+</resources>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "365935176568",
+    "project_id": "language-learner-34342",
+    "storage_bucket": "language-learner-34342.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365935176568:android:b531c3d75e98676e65b68d",
+        "android_client_info": {
+          "package_name": "com.example.samsungprojectlanglearner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDT3m2nWeqTPnXTlu7L7QTzwaOTNv_cLu0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
