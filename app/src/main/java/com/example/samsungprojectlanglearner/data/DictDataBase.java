@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 
 import com.example.samsungprojectlanglearner.data.Dict.Dict;
 
-@Database(entities = {Dict.class}, version = 3)
+@Database(entities = {Dict.class}, version = 4)
 public abstract class DictDataBase extends RoomDatabase {
     private static final String DB_NAME = "database_dict.db";
     private static DictDataBase instance = null;

@@ -12,6 +12,8 @@ import java.util.Objects;
 
 @Entity(tableName = "Dicts")
 public class Dict {
+    @ColumnInfo(name = "result")
+    private String result = "0";
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -28,16 +30,18 @@ public class Dict {
     }
     @Ignore
     public Dict(int id,
-                String Comps, String name) {
+                String Comps, String name, String result) {
         this.id = id;
         this.Comps = Comps;
         this.name = name;
+        this.result = result;
     }
     public Dict(
-            String Comps, String name) {
+            String Comps, String name, String result) {
         this.Comps = Comps;
         this.id = 0;
         this.name = name;
+        this.result = result;
     }
     public int getId() {
         return id;
@@ -65,5 +69,13 @@ public class Dict {
     @Override
     public int hashCode() {
         return Objects.hash(id, Comps, name);
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 }

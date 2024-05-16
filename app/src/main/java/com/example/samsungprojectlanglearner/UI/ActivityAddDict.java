@@ -45,7 +45,8 @@ public class ActivityAddDict extends AppCompatActivity {
         compAdapter = new CompAdapter();
         binding.recyclerViewComp.setAdapter(compAdapter);
         binding.recyclerViewComp.setLayoutManager(new LinearLayoutManager(ActivityAddDict.this));
-        dictActivity = new Dict("", "");
+
+        dictActivity = new Dict("", "", "");
         int idIntent = getIntent().getIntExtra("ID", 0);
         String compsIntent = getIntent().getStringExtra("COMPS");
         String nameIntent = getIntent().getStringExtra("NAME");
@@ -76,7 +77,9 @@ public class ActivityAddDict extends AppCompatActivity {
             updateRepository(false);
             if(notNullCheck(dictActivity)) {
                     if (key.equals("add")) {
-                        MainActivity.add(dictActivity);
+                        dictActivity.setResult("0");
+                        MainActivity.viewModel.add(dictActivity);
+                        startActivity(new Intent(ActivityAddDict.this, MainActivity.class));
                         finish();
 
                     }
@@ -96,6 +99,7 @@ public class ActivityAddDict extends AppCompatActivity {
     private void updateRepository(boolean key) {
         dictActivity.setName(binding.etInputDictionaryName.getText().toString());
         dictActivity.setComps(toStr(compList));
+        dictActivity.setResult("0");
         MainActivity.viewModel.update(dictActivity);
         if (key) {
             finish();

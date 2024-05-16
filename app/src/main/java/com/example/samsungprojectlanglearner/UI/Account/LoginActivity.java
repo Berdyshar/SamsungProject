@@ -1,19 +1,16 @@
-package com.example.samsungprojectlanglearner.UI;
+package com.example.samsungprojectlanglearner.UI.Account;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import com.example.samsungprojectlanglearner.databinding.ActivityLoginBinding;
 
-import com.example.samsungprojectlanglearner.R;
+import com.example.samsungprojectlanglearner.UI.MainActivity;
+
+import com.example.samsungprojectlanglearner.databinding.ActivityLoginBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -26,6 +23,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        binding.btnNewActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                finish();
+            }
+        });
         binding.btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,13 +50,7 @@ public class LoginActivity extends AppCompatActivity {
                             });
                 }
 
-                binding.tvNewActivity.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-                        finish();
-                    }
-                });
+
             }
         });
 

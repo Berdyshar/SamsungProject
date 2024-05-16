@@ -1,62 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.MainActivity"
-    android:background="#FFFFFF"
-    >
+    android:background="@color/white"
+    android:theme="@style/Theme2"
+    tools:context=".UI.MainActivity">
+
 
     <LinearLayout
+        android:id="@+id/linlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/linlay"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent">
+
         <TextView
+            android:id="@+id/tvDictionaries"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvDictionaries"
-            android:text="@string/dicts"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:textSize="40sp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="5dp"
+            android:text="@string/dicts"
+            android:textColor="#000000"
+            android:textSize="40sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
+
         <EditText
+            android:id="@+id/etSearchDict"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:id="@+id/etSearchDict"
             android:layout_marginHorizontal="8dp"
+            android:hint="Search your dicts"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            android:theme="@style/EditTextStyle"
+
             app:layout_constraintTop_toBottomOf="@+id/tvDictionaries"
+
+
             />
     </LinearLayout>
 
 
-       
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginHorizontal="8dp"
         android:id="@+id/recyclerViewDictionaries"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/linlay"
-        tools:listitem="@layout/dictionary_item"
+        android:layout_marginHorizontal="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@id/linlay"
+        tools:listitem="@layout/dictionary_item" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnAddDictionary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        android:id="@+id/btnAddDictionary"
+        android:src="@drawable/baseline_add_24"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/baseline_add_24"/>
+        app:layout_constraintEnd_toEndOf="parent" />
+
+<!--    <com.google.android.material.tabs.TabLayout-->
+<!--        android:id="@+id/tabLay"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:tabTextColor = "@color/black">-->
+
+<!--        <com.google.android.material.tabs.TabItem-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Dicts"-->
+<!--            />-->
+
+<!--        <com.google.android.material.tabs.TabItem-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Profile"-->
+<!--            />-->
+<!--    </com.google.android.material.tabs.TabLayout>-->
+
+<!--    <androidx.viewpager.widget.ViewPager-->
+<!--        android:id="@+id/viewPager"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"/>-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

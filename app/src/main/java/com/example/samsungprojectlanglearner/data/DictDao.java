@@ -21,8 +21,8 @@ public interface DictDao {
     Completable add(Dict dict);
     @Query("DELETE FROM Dicts WHERE id = :id")
     Completable remove(int id);
-    @Query("UPDATE Dicts SET name=:name, components =:Comps WHERE id=:id")
-    Completable update(int id, String Comps, String name);
+    @Query("UPDATE Dicts SET name=:name, components =:Comps, result =:result WHERE id=:id")
+    Completable update(int id, String Comps, String name, String result);
     @Query("SELECT * FROM Dicts WHERE id=:id")
     Dict get(int id);
 }

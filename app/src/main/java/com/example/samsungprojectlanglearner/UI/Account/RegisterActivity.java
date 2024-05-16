@@ -1,22 +1,18 @@
-package com.example.samsungprojectlanglearner.UI;
+package com.example.samsungprojectlanglearner.UI.Account;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.example.samsungprojectlanglearner.R;
+import com.example.samsungprojectlanglearner.UI.MainActivity;
 import com.example.samsungprojectlanglearner.databinding.ActivityRegisterBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -52,6 +48,10 @@ public class RegisterActivity extends AppCompatActivity {
                                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                                 .setValue(hashMap);
                                         startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                                    }
+                                    else {
+                                        Log.d("Error", String.valueOf(task.getException()));
+                                     //   Toast.makeText(RegisterActivity.this, String.valueOf(task.getException()) , Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });

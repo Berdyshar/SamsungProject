@@ -2,42 +2,116 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+    android:theme="@style/Theme2"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UI.ResultActivity"
     android:background="@color/white">
-<!--    <ProgressBar-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        android:id="@+id/progressBar"-->
-<!--        android:indeterminate="false"-->
-
-<!--        />-->
-
-    <Button
-        android:id="@+id/button"
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
-        android:textSize="30dp"
-        android:background="#AA0000"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/baseline_arrow_back_24"
+        android:background="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/btnBack"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"/>
+    <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Your result"
+        android:textSize="40dp"
+        android:textAlignment="center"
+        />
 
     <ProgressBar
-        android:id="@+id/progressBar3"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:id="@+id/progressBar"
+        style="@style/CircularDeterminateProgressBar"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:progress="60" />
+
+    <TextView
+        android:id="@+id/text_view_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toBottomOf="@+id/progressBar"
+        app:layout_constraintEnd_toEndOf="@+id/progressBar"
+        app:layout_constraintStart_toStartOf="@+id/progressBar"
+        app:layout_constraintTop_toTopOf="@+id/progressBar"
+        tools:text="60%"
+        android:textSize="40dp"/>
+
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/progressBar"-->
+<!--        android:background="#00FF00"-->
+<!--        android:id="@+id/cardViewRightAns"-->
+<!--        >-->
+    <TextView
+        android:id="@+id/tvWrongAnswers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        android:layout_marginStart="8dp"
+        android:textSize="20sp"
+        android:text="Your mistakes:"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewWrongAns"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+        <androidx.recyclerview.widget.RecyclerView
+
+            android:layout_marginHorizontal="8dp"
+            android:id="@+id/recyclerViewWrongAns"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            tools:listitem="@layout/result_item"
+            app:layout_constraintTop_toBottomOf="@id/tvWrongAnswers"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            />
+
+<!--    </androidx.cardview.widget.CardView>-->
+
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/progressBar"-->
+<!--        android:background="#FF0000"-->
+<!--        android:id="@+id/cardViewWrongAns"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        >-->
+<!--    <TextView-->
+<!--        android:id="@+id/tvWrongAnswers"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:textSize="20sp"-->
+<!--        android:text="Wrong Answers:"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/recyclerViewWrongAns"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/recyclerViewRightAns" />-->
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            app:layout_constraintTop_toBottomOf="@id/recyclerViewRightAns"-->
+<!--            android:layout_marginHorizontal="8dp"-->
+<!--            android:layout_marginTop="30dp"-->
+<!--            android:id="@+id/recyclerViewWrongAns"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            tools:listitem="@layout/comp_item"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            />-->
+
+<!--    </androidx.cardview.widget.CardView>-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -59,7 +59,7 @@ public class MainViewModel extends AndroidViewModel {
     }
     public void update(Dict dict) {
         Disposable disposable = dataBase.DictDao()
-                .update(dict.getId(), dict.getComps(), dict.getName())
+                .update(dict.getId(), dict.getComps(), dict.getName(), dict.getResult())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action() {
