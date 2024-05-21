@@ -8,8 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.samsungprojectlanglearner.R;
-import com.example.samsungprojectlanglearner.data.Comp.Comp;
-import com.example.samsungprojectlanglearner.databinding.CompItemBinding;
 import com.example.samsungprojectlanglearner.databinding.ResultItemBinding;
 
 import java.util.LinkedList;

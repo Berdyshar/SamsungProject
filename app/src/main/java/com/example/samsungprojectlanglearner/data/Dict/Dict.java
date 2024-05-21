@@ -12,6 +12,16 @@ import java.util.Objects;
 
 @Entity(tableName = "Dicts")
 public class Dict {
+    @Override
+    public String toString() {
+        return "Dict{" +
+                "result='" + result + '\'' +
+                ", id=" + id +
+                ", Comps='" + Comps + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
     @ColumnInfo(name = "result")
     private String result = "0";
     @ColumnInfo(name = "id")

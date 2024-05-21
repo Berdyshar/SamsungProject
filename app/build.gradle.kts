@@ -42,6 +42,9 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.activity)
+    implementation(libs.legacy.support.v4)
+    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx)
     val room_version = "2.6.1"
 
     implementation("androidx.room:room-runtime:$room_version")
@@ -52,8 +55,8 @@ dependencies {
 
     implementation ("io.reactivex.rxjava3:rxjava:3.1.5")
 
-
-
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

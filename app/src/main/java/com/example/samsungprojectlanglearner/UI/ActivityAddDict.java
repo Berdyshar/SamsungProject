@@ -6,23 +6,20 @@ import static com.example.samsungprojectlanglearner.data.Comp.CompList.toStr;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.samsungprojectlanglearner.Translation;
 import com.example.samsungprojectlanglearner.data.Comp.Comp;
 import com.example.samsungprojectlanglearner.data.Comp.CompAdapter;
 import com.example.samsungprojectlanglearner.data.Dict.Dict;
-import com.example.samsungprojectlanglearner.data.DictDataBase;
 import com.example.samsungprojectlanglearner.databinding.ActivityAddDicitonaryBinding;
 
 import java.util.LinkedList;
@@ -51,14 +48,43 @@ public class ActivityAddDict extends AppCompatActivity {
         String compsIntent = getIntent().getStringExtra("COMPS");
         String nameIntent = getIntent().getStringExtra("NAME");
         key = getIntent().getStringExtra("KEY");
+
         dictActivity.setName(nameIntent);
         dictActivity.setComps(compsIntent);
         dictActivity.setId(idIntent);
+
         binding.etInputDictionaryName.setText(dictActivity.getName());
         compList = (LinkedList<Comp>) toArray(dictActivity.getComps());
+
+
         showList();
         addComps();
         changeComp();
+        createItemTouchHelper();
+
+        binding.btnSave.setOnClickListener(v -> {
+
+            if(notNullCheck(dictActivity)) {
+                    if (key.equals("add")) {
+                        FragmentRecView.viewModel.add(dictActivity);
+
+                    }
+                    else if (key.equals("edit")) {
+                        updateRepository();
+
+                    }
+                finish();
+                }
+                else {
+                    Toast.makeText(ActivityAddDict.this,
+                            "Sorry, but dict name cannot be null",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+
+    }
+
+    private void createItemTouchHelper() {
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -70,40 +96,16 @@ public class ActivityAddDict extends AppCompatActivity {
                 Comp comp = compList.get(position);
                 compList.remove(comp);
                 showList();
-                updateRepository(false);
+                updateRepository();
             }
         }).attachToRecyclerView(binding.recyclerViewComp);
-        binding.btnSave.setOnClickListener(v -> {
-            updateRepository(false);
-            if(notNullCheck(dictActivity)) {
-                    if (key.equals("add")) {
-                        dictActivity.setResult("0");
-                        MainActivity.viewModel.add(dictActivity);
-                        startActivity(new Intent(ActivityAddDict.this, MainActivity.class));
-                        finish();
-
-                    }
-                    else if (key.equals("edit")) {
-                        updateRepository(true);
-                    }
-
-                }
-                else {
-                    Toast.makeText(ActivityAddDict.this,
-                            "Sorry, but dict name cannot be null",
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
-
     }
-    private void updateRepository(boolean key) {
+
+    private void updateRepository() {
         dictActivity.setName(binding.etInputDictionaryName.getText().toString());
         dictActivity.setComps(toStr(compList));
         dictActivity.setResult("0");
-        MainActivity.viewModel.update(dictActivity);
-        if (key) {
-            finish();
-        }
+        FragmentRecView.viewModel.update(dictActivity);
     }
     private void showList() {
         compAdapter.setCompList(compList);
@@ -117,14 +119,14 @@ public class ActivityAddDict extends AppCompatActivity {
             binding.btnAddComp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    comp.setWord(binding.etInputWord.getText().toString());
-                    comp.setTranslation(binding.etInputTranslation.getText().toString());
                     if (notNullCheck(comp)) {
+                        comp.setWord(binding.etInputWord.getText().toString());
+                        comp.setTranslation(binding.etInputTranslation.getText().toString());
                         compList.set(position, comp);
                         showList();
                         binding.etInputWord.setText("");
                         binding.etInputTranslation.setText("");
-                        updateRepository(false);
+                        updateRepository();
                         addComps();
                     }
                     else {
@@ -138,6 +140,29 @@ public class ActivityAddDict extends AppCompatActivity {
 
 
     private void addComps() {
+        binding.btnLoadTranslation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Translation translation = new Translation();
+                translation.translate(binding.etInputWord.getText().toString(), "en-ru", new Translation.Callback<List<String>>() {
+                    @Override
+                    public void onSuccess(List<String> result) {
+                        String translatedText = result.get(0);
+                        binding.etInputTranslation.setText(translatedText);
+                        Log.d("Translation", "Translated text: " + translatedText);
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        Log.e("Translation", "Error translating text: " + t.getMessage());
+                        binding.etInputTranslation.setText("Error");
+                        Toast.makeText(ActivityAddDict.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+
         binding.btnAddComp.setOnClickListener(v -> {
             String word = binding.etInputWord.getText().toString();
             String translation = binding.etInputTranslation.getText().toString();
@@ -147,7 +172,7 @@ public class ActivityAddDict extends AppCompatActivity {
                 showList();
                 binding.etInputWord.setText("");
                 binding.etInputTranslation.setText("");
-                updateRepository(false);
+                updateRepository();
             }
             else {
                 Toast.makeText(ActivityAddDict.this, "Sorry, but word and translation cannot be null", Toast.LENGTH_SHORT).show();
