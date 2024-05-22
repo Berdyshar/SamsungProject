@@ -9,7 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.samsungprojectlanglearner.UI.MainActivity;
+import com.example.samsungprojectlanglearner.UI.activities.MainActivity;
 
 import com.example.samsungprojectlanglearner.databinding.ActivityLoginBinding;
 import com.google.android.gms.tasks.OnCompleteListener;

@@ -1,8 +1,9 @@
-package com.example.samsungprojectlanglearner.UI;
+package com.example.samsungprojectlanglearner.UI.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.example.samsungprojectlanglearner.UI.activities.ActivityAddDict;
+import com.example.samsungprojectlanglearner.UI.activities.ActivityStudy;
+import com.example.samsungprojectlanglearner.UI.viewModels.DictViewModel;
+import com.example.samsungprojectlanglearner.UI.activities.MainActivity;
+import com.example.samsungprojectlanglearner.UI.viewModels.MainViewModel;
 import com.example.samsungprojectlanglearner.data.Dict.Dict;
 import com.example.samsungprojectlanglearner.data.Dict.DictAdapter;
 import com.example.samsungprojectlanglearner.databinding.FragmentRecViewBinding;
@@ -25,29 +32,15 @@ import com.example.samsungprojectlanglearner.databinding.FragmentRecViewBinding;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentRecView#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragmentRecView extends Fragment {
-    public static  FragmentRecView fragment = null;
     private FragmentRecViewBinding binding;
     public static DictAdapter adapter;
     public static List<Dict> dictList;
     public static MainViewModel viewModel;
-
+    private static DictViewModel dictViewModel;
     public FragmentRecView() {
         // Required empty public constructor
     }
-
-    public static FragmentRecView newInstance() {
-        if (fragment == null) {
-            fragment = new FragmentRecView();
-        }
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,11 +50,27 @@ public class FragmentRecView extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding = FragmentRecViewBinding.bind(view);
+        dictList = new LinkedList<>();
+        dictViewModel = new ViewModelProvider(this).get(DictViewModel.class);
         createViewModel();
         createRecyclerView();
         createDictItemClickListener();
         createItemTouchHelper();
         createTextChangedListener();
+        binding.btnAddDictionary.setOnClickListener(v -> {
+            Dict dict = new Dict("", "", "");
+            dictViewModel.setDict(dict);
+            DictViewModel.setCreatingDict(true);
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                Intent intent = new Intent(getContext(), ActivityAddDict.class);
+                ActivityAddDict.key = "add";
+                startActivity(intent);
+            }
+            else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                MainActivity.startAddDictFragment();
+                FragmentAddDict.key = "add";
+            }
+        });
     }
 
     @Override
@@ -80,22 +89,28 @@ public class FragmentRecView extends Fragment {
                         .setPositiveButton("Edit", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = ActivityAddDict.addDictionaryIntent(getContext(),
-                                        dict.getName(),
-                                        dict.getComps(),
-                                        dict.getId(),
-                                        "edit"
-                                );
-                                startActivity(intent);
+                                dictViewModel.setDict(dict);
+                                ActivityAddDict.key = "edit";
+                                DictViewModel.setCreatingDict(true);
+
+                                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                                    Intent intent = new Intent(getContext(), ActivityAddDict.class);
+                                    startActivity(intent);
+                                }
+                                else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                    MainActivity.startAddDictFragment();
+                                    FragmentAddDict.key = "edit";
+                                }
                             }
                         })
                         .setNeutralButton("Study dict", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = ActivityStudy.newIntent(getContext(),
-                                        dict.getComps(),
-                                        position);
-                                startActivity(intent);
+//                                Intent intent = ActivityStudy.newIntent(getContext(),
+//                                        dict.getComps(),
+//                                        position);
+                                DictViewModel.dict = dict;
+                                startActivity(new Intent(getContext(), ActivityStudy.class));
                             }
                         })
                         .show();

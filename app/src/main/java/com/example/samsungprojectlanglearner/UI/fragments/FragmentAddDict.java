@@ -1,47 +1,56 @@
-package com.example.samsungprojectlanglearner.UI;
+package com.example.samsungprojectlanglearner.UI.fragments;
 
 import static com.example.samsungprojectlanglearner.data.Comp.CompList.toArray;
 import static com.example.samsungprojectlanglearner.data.Comp.CompList.toStr;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.samsungprojectlanglearner.R;
-import com.example.samsungprojectlanglearner.Translation;
+import com.example.samsungprojectlanglearner.UI.viewModels.DictViewModel;
+import com.example.samsungprojectlanglearner.UI.activities.MainActivity;
 import com.example.samsungprojectlanglearner.data.Comp.Comp;
 import com.example.samsungprojectlanglearner.data.Comp.CompAdapter;
 import com.example.samsungprojectlanglearner.data.Dict.Dict;
 import com.example.samsungprojectlanglearner.databinding.FragmentAddDictBinding;
 
 import java.util.LinkedList;
-import java.util.List;
 
 
 public class FragmentAddDict extends Fragment {
-    public static AddDictViewModel viewModel;
+    public static String key = "";
+
+    public static void setName(String name) {
+        FragmentAddDict.name = name;
+    }
+
+    public static String name = "";
+    public static String comps = "";
+    public static String result = "";
+    public static int id = 0;
+
     private Dict dictActivity;
     private static LinkedList<Comp> compList;
     private CompAdapter compAdapter;
     private FragmentAddDictBinding binding;
+    private DictViewModel dictViewModel;
     public FragmentAddDict() {
         // Required empty public constructor
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,58 +65,46 @@ public class FragmentAddDict extends Fragment {
         return binding.getRoot();
     }
 
-    //        viewModel = new ViewModelProvider(this).get(AddDictViewModel.class);
-//        viewModel.getDict().observe(getViewLifecycleOwner(), new Observer<Dict>() {
-//            @Override
-//            public void onChanged(Dict dict) {
-//                dictActivity = dict;
-//                Toast.makeText(getContext(), dictActivity.toString(), Toast.LENGTH_LONG).show();
-//            }
-//        });
-//        viewModel.setDict(dictActivity);
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        dictViewModel = new ViewModelProvider(this).get(DictViewModel.class);
+        if (DictViewModel.dict != null) {
+            dictActivity = DictViewModel.dict;
+        }
+        compList = new LinkedList<>();
         compAdapter = new CompAdapter();
         binding.recyclerViewComp.setAdapter(compAdapter);
         binding.recyclerViewComp.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        viewModel = new ViewModelProvider(this).get(AddDictViewModel.class);
-        dictActivity = new Dict("", "", "");
-    //    dictActivity = viewModel.getDict();
-        String name = viewModel.getName();
-        String comps = viewModel.getComps();
-        String result = viewModel.getResult();
-        int id = viewModel.getId();
-
-        dictActivity.setName(name);
-        dictActivity.setComps(comps);
-        dictActivity.setResult(result);
-        dictActivity.setId(id);
-        Toast.makeText(getContext(), name + " " + comps + " " + result + " " + id +" ", Toast.LENGTH_SHORT).show();
-
         binding.etInputDictionaryName.setText(dictActivity.getName());
         compList = (LinkedList<Comp>) toArray(dictActivity.getComps());
         showList();
+        createTextWatcher();
         addComps();
         changeComp();
         createItemTouchHelper();
 
 
         binding.btnSave.setOnClickListener(v -> {
-            updateRepository();
-           // dictActivity.setName(binding.etInputDictionaryName.getText().toString());
-            FragmentRecView.viewModel.update(dictActivity);
+            if (key.equals("add")) {
+                FragmentRecView.viewModel.add(dictActivity);
+            }
+            else {
+                FragmentRecView.viewModel.update(dictActivity);
+            }
+            DictViewModel.setCreatingDict(false);
+            dictViewModel.setDict(null);
+            MainActivity.key = "";
+            requireActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
 
-
-            getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-         //   getActivity().getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, MainActivity.fragmentRecView).commit();
 
         });
     }
+
+
 
     @Override
     public void onResume() {
@@ -129,6 +126,24 @@ public class FragmentAddDict extends Fragment {
                 updateRepository();
             }
         }).attachToRecyclerView(binding.recyclerViewComp);
+    }
+    private void createTextWatcher() {
+        binding.etInputDictionaryName.setText(dictActivity.getName());
+        binding.etInputDictionaryName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateRepository();
+
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
     private void addComps() {
 //        binding.btnLoadTranslation.setOnClickListener(new View.OnClickListener() {
@@ -157,7 +172,11 @@ public class FragmentAddDict extends Fragment {
                     binding.etInputTranslation.getText().toString());
             if (notNullCheck(comp)) {
                 compList.add(comp);
+                showList();
+                binding.etInputWord.setText("");
+                binding.etInputTranslation.setText("");
                 updateRepository();
+
             }
             else {
                 Toast.makeText(getContext(), "Sorry, but word and translation cannot be null", Toast.LENGTH_SHORT).show();
@@ -177,6 +196,9 @@ public class FragmentAddDict extends Fragment {
                         comp.setWord(binding.etInputWord.getText().toString());
                         comp.setTranslation(binding.etInputTranslation.getText().toString());
                         compList.set(position, comp);
+                        showList();
+                        binding.etInputWord.setText("");
+                        binding.etInputTranslation.setText("");
                         updateRepository();
                     }
                     else {
@@ -190,9 +212,7 @@ public class FragmentAddDict extends Fragment {
         dictActivity.setName(binding.etInputDictionaryName.getText().toString());
         dictActivity.setComps(toStr(compList));
         dictActivity.setResult("0");
-        binding.etInputWord.setText("");
-        binding.etInputTranslation.setText("");
-        showList();
+        dictViewModel.setDict(dictActivity);
     }
     public boolean notNullCheck(Comp comp) {
         boolean Check = true;

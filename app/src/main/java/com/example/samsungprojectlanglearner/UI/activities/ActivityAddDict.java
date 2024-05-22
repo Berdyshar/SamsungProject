@@ -1,87 +1,127 @@
-package com.example.samsungprojectlanglearner.UI;
+package com.example.samsungprojectlanglearner.UI.activities;
 
 import static com.example.samsungprojectlanglearner.data.Comp.CompList.toArray;
 import static com.example.samsungprojectlanglearner.data.Comp.CompList.toStr;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.samsungprojectlanglearner.Translation;
+import com.example.samsungprojectlanglearner.UI.viewModels.DictViewModel;
+import com.example.samsungprojectlanglearner.UI.fragments.FragmentAddDict;
+import com.example.samsungprojectlanglearner.UI.fragments.FragmentRecView;
 import com.example.samsungprojectlanglearner.data.Comp.Comp;
 import com.example.samsungprojectlanglearner.data.Comp.CompAdapter;
 import com.example.samsungprojectlanglearner.data.Dict.Dict;
 import com.example.samsungprojectlanglearner.databinding.ActivityAddDicitonaryBinding;
 
 import java.util.LinkedList;
-import java.util.List;
 
-public class ActivityAddDict extends AppCompatActivity {
-    private String key;
+public class ActivityAddDict extends AppCompatActivity implements LifecycleOwner {
+    public static String key;
     private ActivityAddDicitonaryBinding binding;
-    private Dict dictActivity;
+    public static Dict dictActivity;
     private static LinkedList<Comp> compList;
     private CompAdapter compAdapter;
-
+    private DictViewModel dictViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityAddDicitonaryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        compAdapter = new CompAdapter();
-        binding.recyclerViewComp.setAdapter(compAdapter);
-        binding.recyclerViewComp.setLayoutManager(new LinearLayoutManager(ActivityAddDict.this));
-
-        dictActivity = new Dict("", "", "");
-        int idIntent = getIntent().getIntExtra("ID", 0);
-        String compsIntent = getIntent().getStringExtra("COMPS");
-        String nameIntent = getIntent().getStringExtra("NAME");
-        key = getIntent().getStringExtra("KEY");
-
-        dictActivity.setName(nameIntent);
-        dictActivity.setComps(compsIntent);
-        dictActivity.setId(idIntent);
-
-        binding.etInputDictionaryName.setText(dictActivity.getName());
-        compList = (LinkedList<Comp>) toArray(dictActivity.getComps());
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Intent intent = new Intent(this, MainActivity.class);
+            MainActivity.key = "add";
+            FragmentAddDict.key = "add";
+            startActivity(intent);
+            finish();
+        }
+        dictViewModel = new ViewModelProvider(this).get(DictViewModel.class);
 
 
-        showList();
+        getValues();
+        createRecyclerView();
+        createTextWatcher();
         addComps();
         changeComp();
         createItemTouchHelper();
 
+
         binding.btnSave.setOnClickListener(v -> {
 
-            if(notNullCheck(dictActivity)) {
+            if(!dictActivity.getName().isEmpty()) {
                     if (key.equals("add")) {
                         FragmentRecView.viewModel.add(dictActivity);
-
                     }
                     else if (key.equals("edit")) {
-                        updateRepository();
-
+                        FragmentRecView.viewModel.update(dictActivity);
                     }
+                    dictViewModel.setDict(null);
+                DictViewModel.setCreatingDict(false);
+                MainActivity.key = "";
                 finish();
-                }
-                else {
-                    Toast.makeText(ActivityAddDict.this,
-                            "Sorry, but dict name cannot be null",
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
+            }
+            else {
+                Toast.makeText(ActivityAddDict.this,
+                        "Sorry, but dict name cannot be null",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dictActivity = DictViewModel.dict;
+    }
+
+    private void createTextWatcher() {
+        binding.etInputDictionaryName.setText(dictActivity.getName());
+        binding.etInputDictionaryName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updateRepository();
+
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
+
+    private void createRecyclerView() {
+        compAdapter = new CompAdapter();
+        binding.recyclerViewComp.setAdapter(compAdapter);
+        binding.recyclerViewComp.setLayoutManager(new LinearLayoutManager(ActivityAddDict.this));
+        compList = (LinkedList<Comp>) toArray(dictActivity.getComps());
+        showList();
+    }
+
+    private void getValues() {
+        dictActivity = new Dict("", "", "");
+        if (DictViewModel.dict != null) {
+            dictActivity = DictViewModel.dict;
+        }
     }
 
     private void createItemTouchHelper() {
@@ -105,7 +145,7 @@ public class ActivityAddDict extends AppCompatActivity {
         dictActivity.setName(binding.etInputDictionaryName.getText().toString());
         dictActivity.setComps(toStr(compList));
         dictActivity.setResult("0");
-        FragmentRecView.viewModel.update(dictActivity);
+        dictViewModel.setDict(dictActivity);
     }
     private void showList() {
         compAdapter.setCompList(compList);
@@ -140,27 +180,27 @@ public class ActivityAddDict extends AppCompatActivity {
 
 
     private void addComps() {
-        binding.btnLoadTranslation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Translation translation = new Translation();
-                translation.translate(binding.etInputWord.getText().toString(), "en-ru", new Translation.Callback<List<String>>() {
-                    @Override
-                    public void onSuccess(List<String> result) {
-                        String translatedText = result.get(0);
-                        binding.etInputTranslation.setText(translatedText);
-                        Log.d("Translation", "Translated text: " + translatedText);
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-                        Log.e("Translation", "Error translating text: " + t.getMessage());
-                        binding.etInputTranslation.setText("Error");
-                        Toast.makeText(ActivityAddDict.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
+//        binding.btnLoadTranslation.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Translation translation = new Translation();
+//                translation.translate(binding.etInputWord.getText().toString(), "en-ru", new Translation.Callback<List<String>>() {
+//                    @Override
+//                    public void onSuccess(List<String> result) {
+//                        String translatedText = result.get(0);
+//                        binding.etInputTranslation.setText(translatedText);
+//                        Log.d("Translation", "Translated text: " + translatedText);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable t) {
+//                        Log.e("Translation", "Error translating text: " + t.getMessage());
+//                        binding.etInputTranslation.setText("Error");
+//                        Toast.makeText(ActivityAddDict.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            }
+//        });
 
 
         binding.btnAddComp.setOnClickListener(v -> {
@@ -192,13 +232,6 @@ public class ActivityAddDict extends AppCompatActivity {
     public boolean notNullCheck(Comp comp) {
         boolean Check = true;
         if (comp.getWord().isEmpty() || comp.getTranslation().isEmpty()) {
-            Check = false;
-        }
-        return Check;
-    }
-    public boolean notNullCheck(Dict dict) {
-        boolean Check = true;
-        if (dict.getName().isEmpty()) {
             Check = false;
         }
         return Check;

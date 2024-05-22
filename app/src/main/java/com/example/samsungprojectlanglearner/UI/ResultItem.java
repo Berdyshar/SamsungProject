@@ -19,11 +19,6 @@ public class ResultItem implements Serializable {
     public static String createString(ResultItem item) {
         return item.getWord() + "____" + item.getRightAnswer() + "____" + item.getWrongAnswer();
     }
-    public static ResultItem fromString(String str) {
-        String[] s = str.split("____");
-        ResultItem item = new ResultItem(s[0], s[1], s[2]);
-        return item;
-    }
 
     public ResultItem(String word, String rightAnswer, String wrongAnswer) {
         this.word = word;

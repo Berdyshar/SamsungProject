@@ -16,7 +16,7 @@
         android:theme="@style/Theme2"
         tools:targetApi="31">
         <activity
-            android:name=".UI.ResultActivity"
+            android:name=".UI.activities.ResultActivity"
             android:exported="false" />
         <activity
             android:name=".UI.account.RegisterActivity"
@@ -25,13 +25,13 @@
             android:name=".UI.account.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".UI.ActivityStudy"
+            android:name=".UI.activities.ActivityStudy"
             android:exported="false" />
         <activity
-            android:name=".UI.ActivityAddDict"
+            android:name=".UI.activities.ActivityAddDict"
             android:exported="false" />
         <activity
-            android:name=".UI.MainActivity"
+            android:name=".UI.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

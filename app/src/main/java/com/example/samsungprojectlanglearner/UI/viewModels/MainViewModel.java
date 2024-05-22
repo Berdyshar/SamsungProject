@@ -1,4 +1,4 @@
-package com.example.samsungprojectlanglearner.UI;
+package com.example.samsungprojectlanglearner.UI.viewModels;
 
 import android.app.Application;
 
