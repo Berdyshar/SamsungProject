@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.samsungprojectlanglearner.R;
-import com.example.samsungprojectlanglearner.data.Comp.CompList;
 import com.example.samsungprojectlanglearner.databinding.DictionaryItemBinding;
 
 import java.util.LinkedList;

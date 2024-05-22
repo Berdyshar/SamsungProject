@@ -1,4 +1,4 @@
-package com.example.samsungprojectlanglearner.UI.Account;
+package com.example.samsungprojectlanglearner.UI.account;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -3,9 +3,7 @@ package com.example.samsungprojectlanglearner.UI;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -34,7 +32,7 @@ public class ResultActivity extends AppCompatActivity {
             testList.add(ResultItem.fromString(tempList.get(i)));
         }
 
-        Dict dict = MainActivity.adapter.getDictList().get(position);
+        Dict dict = FragmentRecView.adapter.getDictList().get(position);
         position = getIntent().getIntExtra("Position", 0);
         result = getIntent().getIntExtra("Result", 0);
 
@@ -46,7 +44,7 @@ public class ResultActivity extends AppCompatActivity {
         }
 
         dict.setResult(String.valueOf(result));
-        MainActivity.viewModel.update(dict);
+        FragmentRecView.viewModel.update(dict);
 
 
         binding.btnBack.setOnClickListener(new View.OnClickListener() {
