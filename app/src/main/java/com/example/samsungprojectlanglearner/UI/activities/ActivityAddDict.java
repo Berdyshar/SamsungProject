@@ -2,12 +2,17 @@ package com.example.samsungprojectlanglearner.UI.activities;
 
 import static com.example.samsungprojectlanglearner.data.Comp.CompList.toArray;
 import static com.example.samsungprojectlanglearner.data.Comp.CompList.toStr;
+
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,6 +22,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.samsungprojectlanglearner.R;
 import com.example.samsungprojectlanglearner.Translation;
 import com.example.samsungprojectlanglearner.UI.viewModels.DictViewModel;
 import com.example.samsungprojectlanglearner.UI.fragments.FragmentAddDict;
@@ -25,11 +31,14 @@ import com.example.samsungprojectlanglearner.data.Comp.Comp;
 import com.example.samsungprojectlanglearner.data.Comp.CompAdapter;
 import com.example.samsungprojectlanglearner.data.Dict.Dict;
 import com.example.samsungprojectlanglearner.databinding.ActivityAddDicitonaryBinding;
+import com.example.samsungprojectlanglearner.databinding.DialogCompsBinding;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class ActivityAddDict extends AppCompatActivity implements LifecycleOwner {
+    private AlertDialog alertDialog;
     public static String key;
     private ActivityAddDicitonaryBinding binding;
     public static Dict dictActivity;
@@ -152,64 +161,79 @@ public class ActivityAddDict extends AppCompatActivity implements LifecycleOwner
     private void changeComp() {
         compAdapter.setCompItemClickListener(position -> {
             Comp comp = compList.get(position);
-            binding.etInputWord.setText(comp.getWord());
-            binding.etInputTranslation.setText(comp.getTranslation());
-            binding.btnAddComp.setOnClickListener(v -> {
-                if (notNullCheck(comp)) {
-                    comp.setWord(binding.etInputWord.getText().toString());
-                    comp.setTranslation(binding.etInputTranslation.getText().toString());
-                    compList.set(position, comp);
-                    showList();
-                    binding.etInputWord.setText("");
-                    binding.etInputTranslation.setText("");
-                    updateRepository();
-                    addComps();
+            View dialog = getLayoutInflater().inflate(R.layout.dialog_comps, null);
+            DialogCompsBinding dialogCompsBinding = DialogCompsBinding.bind(dialog);
+            dialogCompsBinding.etInputWord.setText(comp.getWord());
+            dialogCompsBinding.etInputTranslation.setText(comp.getTranslation());
+            dialogCompsBinding.btnAddComp.setText("Save word");
+            dialogCompsBinding.btnAddComp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (notNullCheck(comp)) {
+                        comp.setWord(dialogCompsBinding.etInputWord.getText().toString());
+                        comp.setTranslation(dialogCompsBinding.etInputTranslation.getText().toString());
+                        compList.set(position, comp);
+                        showList();
+                        updateRepository();
+                        addComps();
+                    }
+                    else {
+                        Toast.makeText(ActivityAddDict.this, "Sorry, but word and translation cannot be null", Toast.LENGTH_SHORT).show();
+                    }
+                    alertDialog.dismiss();
                 }
-                else {
-                    Toast.makeText(ActivityAddDict.this, "Sorry, but word and translation cannot be null", Toast.LENGTH_SHORT).show();
-                }
-
             });
+            alertDialog = new AlertDialog.Builder(ActivityAddDict.this)
+                    .setView(dialog).create();
+            alertDialog.show();
         });
     }
 
 
     private void addComps() {
-        binding.btnLoadTranslation.setOnClickListener(v -> {
-            Translation translation = new Translation();
-            translation.translate(binding.etInputWord.getText().toString(), "en-ru", new Translation.Callback<List<String>>() {
-                @Override
-                public void onSuccess(List<String> result) {
-                    String translatedText = result.get(0);
-                    binding.etInputTranslation.setText(translatedText);
-                    Log.d("Translation", "Translated text: " + translatedText);
-                }
-
-                @Override
-                public void onError(Throwable t) {
-                    Log.e("Translation", "Error translating text: " + t.getMessage());
-                    binding.etInputTranslation.setText("Error");
-                    Toast.makeText(ActivityAddDict.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
+//        binding.btnLoadTranslation.setOnClickListener(v -> {
+//            Translation translation = new Translation();
+//            translation.translate(binding.etInputWord.getText().toString(), "en-ru", new Translation.Callback<List<String>>() {
+//                @Override
+//                public void onSuccess(List<String> result) {
+//                    String translatedText = result.get(0);
+//                    binding.etInputTranslation.setText(translatedText);
+//                    Log.d("Translation", "Translated text: " + translatedText);
+//                }
+//
+//                @Override
+//                public void onError(Throwable t) {
+//                    Log.e("Translation", "Error translating text: " + t.getMessage());
+//                    binding.etInputTranslation.setText("Error");
+//                    Toast.makeText(ActivityAddDict.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//        });
 
 
         binding.btnAddComp.setOnClickListener(v -> {
-            String word = binding.etInputWord.getText().toString();
-            String translation = binding.etInputTranslation.getText().toString();
-            Comp comp = new Comp(word, translation);
-            if (notNullCheck(comp)) {
-                compList.add(comp);
-                showList();
-                binding.etInputWord.setText("");
-                binding.etInputTranslation.setText("");
-                updateRepository();
-            }
-            else {
-                Toast.makeText(ActivityAddDict.this, "Sorry, but word and translation cannot be null", Toast.LENGTH_SHORT).show();
-            }
-
+            View dialog = getLayoutInflater().inflate(R.layout.dialog_comps, null);
+            DialogCompsBinding dialogCompsBinding = DialogCompsBinding.bind(dialog);
+            dialogCompsBinding.btnAddComp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String word = dialogCompsBinding.etInputWord.getText().toString();
+                    String translation = dialogCompsBinding.etInputTranslation.getText().toString();
+                    Comp comp = new Comp(word, translation);
+                    if (notNullCheck(comp)) {
+                        compList.add(comp);
+                        showList();
+                        updateRepository();
+                    }
+                    else {
+                        Toast.makeText(ActivityAddDict.this, "Sorry, but word and translation cannot be null", Toast.LENGTH_SHORT).show();
+                    }
+                    alertDialog.dismiss();
+                }
+            });
+            alertDialog = new AlertDialog.Builder(ActivityAddDict.this)
+                    .setView(dialog).create();
+            alertDialog.show();
         });
     }
     public boolean notNullCheck(Comp comp) {
