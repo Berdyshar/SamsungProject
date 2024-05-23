@@ -38,12 +38,12 @@ public class MainActivity extends FragmentActivity {
             startActivity(new Intent(this, ActivityAddDict.class));
         }
         fragmentRecView = new FragmentRecView();
-
+        fragmentAddDict = new FragmentAddDict();
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().add(R.id.fragment_containerRecView, fragmentRecView).commit();
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && key.equals("add")){
-            fragmentAddDict = new FragmentAddDict();
+
             fragmentManager.beginTransaction().add(R.id.fragment_containerAddDict, fragmentAddDict).commit();
         }
 
