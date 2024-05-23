@@ -100,7 +100,7 @@ public class FragmentAddDict extends Fragment {
                 FragmentRecView.viewModel.update(dictActivity);
             }
             DictViewModel.setCreatingDict(false);
-            dictViewModel.setDict(null);
+            DictViewModel.setDict(null);
             binding.etInputDictionaryName.setText("");
             MainActivity.key = "";
             requireActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
