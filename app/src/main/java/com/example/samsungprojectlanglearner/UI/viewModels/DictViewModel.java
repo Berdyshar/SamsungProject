@@ -7,7 +7,7 @@ import com.example.samsungprojectlanglearner.data.Dict.Dict;
 public class DictViewModel extends ViewModel {
     public static Dict dict;
 
-    public void setDict(Dict dict) {
+    public static void setDict(Dict dict) {
         DictViewModel.dict = dict;
     }
     public static boolean creatingDict;

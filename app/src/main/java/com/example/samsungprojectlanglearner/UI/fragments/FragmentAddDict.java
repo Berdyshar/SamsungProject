@@ -38,7 +38,6 @@ public class FragmentAddDict extends Fragment {
     }
 
     public static String name = "";
-    public static String comps = "";
     public static String result = "";
     public static int id = 0;
 
@@ -59,7 +58,7 @@ public class FragmentAddDict extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentAddDictBinding.inflate(getLayoutInflater());
         return binding.getRoot();
@@ -97,6 +96,7 @@ public class FragmentAddDict extends Fragment {
             }
             DictViewModel.setCreatingDict(false);
             dictViewModel.setDict(null);
+            binding.etInputDictionaryName.setText("");
             MainActivity.key = "";
             requireActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
 
@@ -146,27 +146,6 @@ public class FragmentAddDict extends Fragment {
         });
     }
     private void addComps() {
-//        binding.btnLoadTranslation.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Translation translation = new Translation();
-//                translation.translate(binding.etInputWord.getText().toString(), "en-ru", new Translation.Callback<List<String>>() {
-//                    @Override
-//                    public void onSuccess(List<String> result) {
-//                        String translatedText = result.get(0);
-//                        binding.etInputTranslation.setText(translatedText);
-//                        Log.d("Translation", "Translated text: " + translatedText);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable t) {
-//                        Log.e("Translation", "Error translating text: " + t.getMessage());
-//                        binding.etInputTranslation.setText("Error");
-//                        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            }
-//        });
         binding.btnAddComp.setOnClickListener(v -> {
             Comp comp = new Comp(binding.etInputWord.getText().toString(),
                     binding.etInputTranslation.getText().toString());
@@ -189,21 +168,18 @@ public class FragmentAddDict extends Fragment {
             Comp comp = compList.get(position);
             binding.etInputWord.setText(comp.getWord());
             binding.etInputTranslation.setText(comp.getTranslation());
-            binding.btnAddComp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (notNullCheck(comp)) {
-                        comp.setWord(binding.etInputWord.getText().toString());
-                        comp.setTranslation(binding.etInputTranslation.getText().toString());
-                        compList.set(position, comp);
-                        showList();
-                        binding.etInputWord.setText("");
-                        binding.etInputTranslation.setText("");
-                        updateRepository();
-                    }
-                    else {
-                        Toast.makeText(getContext(), "Sorry, but word and translation cannot be null", Toast.LENGTH_SHORT).show();
-                    }
+            binding.btnAddComp.setOnClickListener(v -> {
+                if (notNullCheck(comp)) {
+                    comp.setWord(binding.etInputWord.getText().toString());
+                    comp.setTranslation(binding.etInputTranslation.getText().toString());
+                    compList.set(position, comp);
+                    showList();
+                    binding.etInputWord.setText("");
+                    binding.etInputTranslation.setText("");
+                    updateRepository();
+                }
+                else {
+                    Toast.makeText(getContext(), "Sorry, but word and translation cannot be null", Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -215,11 +191,7 @@ public class FragmentAddDict extends Fragment {
         dictViewModel.setDict(dictActivity);
     }
     public boolean notNullCheck(Comp comp) {
-        boolean Check = true;
-        if (comp.getWord().isEmpty() || comp.getTranslation().isEmpty()) {
-            Check = false;
-        }
-        return Check;
+        return !comp.getWord().isEmpty() && !comp.getTranslation().isEmpty();
     }
     private void showList() {
         compAdapter.setCompList(compList);

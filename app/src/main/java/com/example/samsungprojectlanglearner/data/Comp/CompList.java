@@ -5,17 +5,17 @@ import java.util.List;
 
 public class CompList {
     public static String toStr(List<Comp> compList) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (int i = 0; i < compList.size(); i++) {
             Comp comp = compList.get(i);
-            s+=comp.getWord();
-            s+="_";
-            s+=comp.getTranslation();
+            s.append(comp.getWord());
+            s.append("_");
+            s.append(comp.getTranslation());
             if (i != compList.size()-1) {
-                s+= "__";
+                s.append("__");
             }
         }
-        return s;
+        return s.toString();
     }
     public static List<Comp> toArray(String s) {
         List<Comp> compList = new LinkedList<>();

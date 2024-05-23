@@ -23,12 +23,6 @@ public class DictAdapter extends RecyclerView.Adapter<DictAdapter.MyViewHolder> 
     public void setDictItemClickListener(DictItemClickListener dictItemClickListener) {
         this.dictItemClickListener = dictItemClickListener;
     }
-
-
-
-
-
-
     public void setDictList(List<Dict> dictList) {
         this.dictList = dictList;
         notifyDataSetChanged();
@@ -61,12 +55,7 @@ public class DictAdapter extends RecyclerView.Adapter<DictAdapter.MyViewHolder> 
         }
         holder.binding.result.setText(dict.getResult() + "%");
         holder.binding.tvDictSize.setText((dict.getComps().isEmpty()? "0 "+key:String.valueOf(toArray(dict.getComps()).size()) + " " + key));
-        holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dictItemClickListener.onClick(position);
-            }
-        });
+        holder.binding.getRoot().setOnClickListener(v -> dictItemClickListener.onClick(position));
 
 
     }
@@ -76,7 +65,7 @@ public class DictAdapter extends RecyclerView.Adapter<DictAdapter.MyViewHolder> 
     public int getItemCount() {
         return dictList.size();
     }
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder{
         DictionaryItemBinding binding;
         public MyViewHolder(DictionaryItemBinding bin) {
             super(bin.getRoot());

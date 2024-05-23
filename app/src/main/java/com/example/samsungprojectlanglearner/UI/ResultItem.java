@@ -1,10 +1,13 @@
 package com.example.samsungprojectlanglearner.UI;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 public class ResultItem implements Serializable {
     String word;
 
+    @NonNull
     @Override
     public String toString() {
         return "ResultItem{" +
@@ -16,9 +19,6 @@ public class ResultItem implements Serializable {
 
     String rightAnswer;
     String wrongAnswer;
-    public static String createString(ResultItem item) {
-        return item.getWord() + "____" + item.getRightAnswer() + "____" + item.getWrongAnswer();
-    }
 
     public ResultItem(String word, String rightAnswer, String wrongAnswer) {
         this.word = word;

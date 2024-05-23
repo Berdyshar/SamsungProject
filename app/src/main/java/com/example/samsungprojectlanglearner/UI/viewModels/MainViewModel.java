@@ -15,8 +15,6 @@ import java.util.List;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Action;
-import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainViewModel extends AndroidViewModel {
@@ -36,12 +34,7 @@ public class MainViewModel extends AndroidViewModel {
                 .remove(dict.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action() {
-                    @Override
-                    public void run() throws Throwable {
-                        refreshList();
-                    }
-                });
+                .subscribe(this::refreshList);
         compositeDisposable.add(disposable);
     }
     public void add(Dict dict) {
@@ -49,12 +42,7 @@ public class MainViewModel extends AndroidViewModel {
                 .add(dict)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action() {
-                    @Override
-                    public void run() throws Throwable {
-                        refreshList();
-                    }
-                });
+                .subscribe(this::refreshList);
         compositeDisposable.add(disposable);
     }
     public void update(Dict dict) {
@@ -62,27 +50,17 @@ public class MainViewModel extends AndroidViewModel {
                 .update(dict.getId(), dict.getComps(), dict.getName(), dict.getResult())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action() {
-                    @Override
-                    public void run() throws Throwable {
-                        refreshList();
-                    }
-                });
+                .subscribe(this::refreshList);
         compositeDisposable.add(disposable);
     }
 
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     public void refreshList() {
         Disposable disposable = dataBase.DictDao()
                 .getDicts()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<Dict>>() {
-                    @Override
-                    public void accept(List<Dict> dictsDB) throws Throwable {
-                        dicts.setValue(dictsDB);
-                    }
-                });
+                .subscribe(dicts::setValue);
         compositeDisposable.add(disposable);
 
     }
