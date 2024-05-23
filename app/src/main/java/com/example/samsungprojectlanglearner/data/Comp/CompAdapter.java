@@ -48,12 +48,7 @@ public class CompAdapter extends RecyclerView.Adapter<CompAdapter.CompViewHolder
         Comp comp = compList.get(position);
         holder.binding.tvWord.setText(comp.getWord());
         holder.binding.tvTranslation.setText(comp.getTranslation());
-        holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                compItemClickListener.onClick(position);
-            }
-        });
+        holder.binding.getRoot().setOnClickListener(v -> compItemClickListener.onClick(position));
     }
 
     @Override

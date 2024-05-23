@@ -25,7 +25,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.result_item, parent, false);
 
-        return new ResultAdapter.ResultHolder(ResultItemBinding.bind(view));
+        return new ResultHolder(ResultItemBinding.bind(view));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultHold
         return wrongList.size();
     }
 
-    public class ResultHolder extends RecyclerView.ViewHolder {
+    public static class ResultHolder extends RecyclerView.ViewHolder {
         ResultItemBinding binding;
         public ResultHolder(ResultItemBinding b) {
             super(b.getRoot());

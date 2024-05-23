@@ -1,5 +1,6 @@
 package com.example.samsungprojectlanglearner.data.Dict;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -12,6 +13,7 @@ import java.util.Objects;
 
 @Entity(tableName = "Dicts")
 public class Dict {
+    @NonNull
     @Override
     public String toString() {
         return "Dict{" +
@@ -23,7 +25,7 @@ public class Dict {
     }
 
     @ColumnInfo(name = "result")
-    private String result = "0";
+    private String result;
     @ColumnInfo(name = "id")
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -40,14 +42,14 @@ public class Dict {
     }
     @Ignore
     public Dict(int id,
-                String Comps, String name, String result) {
+                String Comps, @NonNull String name, String result) {
         this.id = id;
         this.Comps = Comps;
         this.name = name;
         this.result = result;
     }
     public Dict(
-            String Comps, String name, String result) {
+            String Comps, @NonNull String name, String result) {
         this.Comps = Comps;
         this.id = 0;
         this.name = name;
@@ -60,11 +62,12 @@ public class Dict {
         this.id = id;
     }
 
+    @NonNull
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(@NonNull String name) {
         this.name = name;
     }
 
