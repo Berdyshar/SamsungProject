@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +23,8 @@ import com.example.samsungprojectlanglearner.UI.activities.ActivityStudy;
 import com.example.samsungprojectlanglearner.UI.activities.MainActivity;
 import com.example.samsungprojectlanglearner.UI.viewModels.DictViewModel;
 import com.example.samsungprojectlanglearner.UI.viewModels.MainViewModel;
+import com.example.samsungprojectlanglearner.data.Comp.Comp;
+import com.example.samsungprojectlanglearner.data.Comp.CompList;
 import com.example.samsungprojectlanglearner.data.Dict.Dict;
 import com.example.samsungprojectlanglearner.data.Dict.DictAdapter;
 import com.example.samsungprojectlanglearner.databinding.FragmentRecViewBinding;
@@ -53,6 +56,16 @@ public class FragmentRecView extends Fragment {
         createDictItemClickListener();
         createItemTouchHelper();
         createTextChangedListener();
+//        for (int i = 1; i < 11; i++) {
+//            Dict dict = new Dict("", "Dictionary" + i, "0");
+//            LinkedList<Comp> comps = new LinkedList<>();
+//            for (int k = 0; k < i; k++) {
+//                Comp comp = new Comp("Word"+k+1, "Слово"+k+1);
+//                comps.add(comp);
+//            }
+//            dict.setComps(CompList.toStr(comps));
+//            viewModel.add(dict);
+//        }
         binding.btnAddDictionary.setOnClickListener(v -> {
             Dict dict = new Dict("", "", "");
             DictViewModel.setDict(dict);
@@ -167,10 +180,13 @@ public class FragmentRecView extends Fragment {
     private void createViewModel() {
         dictViewModel = new ViewModelProvider(this).get(DictViewModel.class);
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        viewModel.getDicts().observe(getViewLifecycleOwner(), dicts -> {
-            dictList = dicts;
-            adapter.setDictList(dicts);
-            binding.etSearchDict.setText("");
+        viewModel.getDicts().observe(getViewLifecycleOwner(), new Observer<List<Dict>>() {
+            @Override
+            public void onChanged(List<Dict> dicts) {
+                dictList = dicts;
+                adapter.setDictList(dicts);
+                binding.etSearchDict.setText("");
+            }
         });
     }
 

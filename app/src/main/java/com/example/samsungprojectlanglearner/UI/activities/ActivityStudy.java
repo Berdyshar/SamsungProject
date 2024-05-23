@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 
 import com.example.samsungprojectlanglearner.R;
@@ -26,17 +27,20 @@ public class ActivityStudy extends AppCompatActivity {
     private Context context;
     private static AlertDialog dialog;
     private ActivityStudyBinding binding;
-    private LinkedList<ResultItem> resultItemLinkedList;
+    public static LinkedList<ResultItem> resultItemLinkedList;
     private Random random;
 
     private int right = 0;
     private int wrong = 0;
+    private ResultViewModel resultViewModel;
+    public static String result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityStudyBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        resultViewModel = new ViewModelProvider(this).get(ResultViewModel.class);
         context = this;
         random = new Random();
         LinkedList<Comp> compList = (LinkedList<Comp>) CompList.toArray(DictViewModel.dict.getComps());
@@ -75,8 +79,12 @@ public class ActivityStudy extends AppCompatActivity {
             binding.etInputTranslationStudy.setText("");
             if (compList.isEmpty()) {
                 new Handler().postDelayed(() -> {
-                    ResultViewModel.setResult(String.valueOf(right * 100/ (right + wrong)));
-                    ResultViewModel.setResultItemLinkedList(resultItemLinkedList);
+                    result = String.valueOf(right * 100/ (right + wrong));
+                    ResultViewModel.setResult();
+                    ResultViewModel.setResultItemLinkedList();
+
+                //    ResultViewModel.setResult(String.valueOf(right * 100/ (right + wrong)));
+                 //   ResultViewModel.setResultItemLinkedList(resultItemLinkedList);
                     startActivity(new Intent(ActivityStudy.this, ResultActivity.class));
                     finish();
 

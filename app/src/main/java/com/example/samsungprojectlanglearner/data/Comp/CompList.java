@@ -9,10 +9,10 @@ public class CompList {
         for (int i = 0; i < compList.size(); i++) {
             Comp comp = compList.get(i);
             s.append(comp.getWord());
-            s.append("_");
+            s.append("__");
             s.append(comp.getTranslation());
             if (i != compList.size()-1) {
-                s.append("__");
+                s.append("___");
             }
         }
         return s.toString();
@@ -20,9 +20,9 @@ public class CompList {
     public static List<Comp> toArray(String s) {
         List<Comp> compList = new LinkedList<>();
         if (!(s.isEmpty())) {
-            String[] sr = s.split("__");
+            String[] sr = s.split("___");
             for (String str : sr) {
-                String[] strComp = str.split("_");
+                String[] strComp = str.split("__");
                 String strWord = strComp[0];
                 String strTranslation = strComp[1];
                 Comp comp = new Comp(strWord, strTranslation);
